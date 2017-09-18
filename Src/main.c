@@ -1,6 +1,11 @@
-
+#include <signal.h>
 //Testing purposes
 int main(void)
 {
-    start_i386("disk1.img","w8.iso");
+    pid_t machine1 = start_i386("linux.img","linux.iso");
+   
+    sleep(4);
+    
+    kill(machine1, SIGSTOP);
+    
 }
