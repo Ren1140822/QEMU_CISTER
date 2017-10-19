@@ -19,3 +19,5 @@
 .o*
 
 # End of https://www.gitignore.io/api/linux
+/Java/Library/*
+!/Java/Library/src/
