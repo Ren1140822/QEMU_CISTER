@@ -57,7 +57,8 @@ public class BuildQemuInstance implements Command {
      * and the port number. Despite no validation is made, none of the
      * parameters should be null.
      *
-     * @param theInstructions the instructions to start the QEMU instance (see {@link BuildQemuInstance#instruction}).
+     * @param theInstructions the instructions to start the QEMU instance (see
+     * {@link BuildQemuInstance#instruction}).
      * @param theIP the IP address on which the QEMU will be operating.
      * @param thePort the port number on which the QEMU will be listening.
      */
@@ -68,28 +69,34 @@ public class BuildQemuInstance implements Command {
     }
 
     /**
-     * It creates a new BuildQemuInstance command with the default IP address and port number.
-     * 
-     * @param options the instructions to start the QEMU instance (see {@link BuildQemuInstance#instruction}).
+     * It creates a new BuildQemuInstance command with the default IP address
+     * and port number.
+     *
+     * @param options the instructions to start the QEMU instance (see
+     * {@link BuildQemuInstance#instruction}).
      * @return the built command.
      */
     public static BuildQemuInstance command(String options) {
+        String path = Settings.getQemuPath();
         int portNumber = Settings.getStartingPortNumber() + PORTS_ASSIGNED;
         PORTS_ASSIGNED++;
-        return new BuildQemuInstance(options, DEFAULT_IP, portNumber);
+        return new BuildQemuInstance(path + options, DEFAULT_IP, portNumber);
     }
 
     /**
-     * It creates a new BuildQemuInstance command with a given IP address and port number. Despite no validation is made, none of the
-     * parameters should be null.
-     * 
-     * @param options the instructions to start the QEMU instance (see {@link BuildQemuInstance#instruction}).
+     * It creates a new BuildQemuInstance command with a given IP address and
+     * port number. Despite no validation is made, none of the parameters should
+     * be null.
+     *
+     * @param options the instructions to start the QEMU instance (see
+     * {@link BuildQemuInstance#instruction}).
      * @param ip the IP address on which the QEMU will be operating.
      * @param port the port number on which the QEMU will be listening.
      * @return the built command.
      */
     public static BuildQemuInstance command(String options, String ip, int port) {
-        return new BuildQemuInstance(options, ip, port);
+        String path = Settings.getQemuPath();
+        return new BuildQemuInstance(path + options, ip, port);
     }
 
     /**

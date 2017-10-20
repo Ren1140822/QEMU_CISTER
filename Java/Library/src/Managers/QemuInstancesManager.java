@@ -262,7 +262,8 @@ public class QemuInstancesManager implements InstanceManager {
     }
 
     /**
-     * It executes a list of commands to each of the instances.
+     * It executes a list of commands to each of the instances. The commands
+     * will be trapped to be replaced for the predefined ones if they match.
      *
      * @param commands a map with all the commands,where the keys match the
      * identification of the instances and the value the list of commands to be
@@ -284,7 +285,9 @@ public class QemuInstancesManager implements InstanceManager {
                 resultsMap.put(id, ListResult.create(resultsList));
             } else {
                 for (Command command : entry.getValue()) {
-                    resultsList.add(instance.execute(command));
+                    if (!trapCommand(instance, command, resultsList)) {
+                        resultsList.add(instance.execute(command));
+                    }
                 }
                 resultsMap.put(id, ListResult.create(resultsList));
             }
@@ -329,6 +332,32 @@ public class QemuInstancesManager implements InstanceManager {
         ExecutionResult result = Settings.loadConfigurations(config);
         Settings.logger().exiting(getClass().getName(), "loadConfigurationFile", result);
         return result;
+    }
+
+    /**
+     * It tries to replace the command for the predefined one if it matches.
+     *
+     * @param instance the instance to which the command is sent.
+     * @param command the given command.
+     * @param results the result list that holds the execution result.
+     * @return true if the command could be replaced by a predefined one or
+     * false otherwise.
+     */
+    private boolean trapCommand(Instance instance, Command command, List<ExecutionResult> results) {
+        String instruction = command.instruction();
+        switch (instruction) {
+            case "cont":
+                results.add(continueInstance(instance.id()));
+                return true;
+            case "stop":
+                results.add(suspendInstance(instance.id()));
+                return true;
+            case "quit":
+                results.add(shutdownInstance(instance.id()));
+                return true;
+            default:
+                return false;
+        }
     }
 
 }

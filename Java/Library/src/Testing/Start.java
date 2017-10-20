@@ -38,13 +38,9 @@ public class Start {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("WELCOME");
-        InstanceManager manager = QemuInstancesManager.getInstance();
-        startMachines(manager, 4);
-        System.out.println(manager.listInstances().description());
+        printHeader();
         loop();
-        System.out.println(manager.shutdown());
-        System.out.println("GOODBYE");
+        printFooter();
     }
 
     /**
@@ -54,28 +50,87 @@ public class Start {
         Scanner in = new Scanner(System.in);
         InstanceManager manager = QemuInstancesManager.getInstance();
         boolean iterate = true;
+        System.out.println("== For information about this application type \"help\".");
         do {
-            System.out.println("Insert instruction: ");
+            System.out.println("");
+            System.out.println("== Insert instruction:");
             String[] input = in.nextLine().split("\\|");
-            if (input.length == 2) {
-                System.out.println(runCommand(manager, input[0], input[1]));
-            } else {
-                iterate = false;
+            switch (input.length) {
+                case 2:
+                    input[0] = input[0].trim().toLowerCase();
+                    input[1] = input[1].trim().toLowerCase();
+                    System.out.println(runCommand(manager, input[0], input[1]));
+                    break;
+                case 1:
+                    input[0] = input[0].trim().toLowerCase();
+                    switch(input[0]){
+                        case "list":
+                            System.out.println(runCommand(manager, input[0], ""));
+                            break;
+                        case "help":
+                            printHelp();
+                            break;
+                        case "shutdown":
+                            System.out.println(manager.shutdown());
+                            iterate = false;
+                            break;
+                        default:
+                            System.out.println("Unrecognized command.");
+                    }
+                    break;
+                default:
+                    System.out.println("Unrecognized command.");
+                    break;
             }
         } while (iterate);
     }
 
     /**
-     * It starts a set of machines.
-     *
-     * @param manager the manager of the machines.
-     * @param number the number of machines to be created.
+     * It prints a welcoming message.
      */
-    private static void startMachines(InstanceManager manager, int number) {
-        String qemu = "C:\\Program Files\\qemu\\qemu-system-i386";
-        for (int i = 0; i < number; i++) {
-            manager.startInstance(BuildQemuInstance.command(qemu));
-        }
+    private static void printHeader(){
+        System.out.println("==================================================");
+        System.out.println("==                                              ==");
+        System.out.println("==           QEMU MANAGER CONSOLE APP           ==");
+        System.out.println("==                   WELCOME                    ==");
+        System.out.println("==                                              ==");
+        System.out.println("==================================================");
+        System.out.println("==");
+        System.out.println("== VERSION: Alpha v1.0");
+        System.out.println("==");
+        System.out.println("");
+    }
+
+    /**
+     * It prints a goodbye message.
+     */
+    private static void printFooter(){
+        System.out.println("");
+        System.out.println("==================================================");
+        System.out.println("==                                              ==");
+        System.out.println("==           QEMU MANAGER CONSOLE APP           ==");
+        System.out.println("==                   GOODBYE                    ==");
+        System.out.println("==                                              ==");
+        System.out.println("==================================================");
+    }
+
+    /**
+     * It prints the available commands.
+     */
+    private static void printHelp() {
+        System.out.println("");
+        System.out.println("== Available commands:");
+        System.out.println("==  - \"start | {options}");
+        System.out.println("==  - \"build | {options}");
+        System.out.println("==  - \"execute | {id}");
+        System.out.println("==  - \"continue | {id}\"");
+        System.out.println("==  - \"suspend | {id}\"");
+        System.out.println("==  - \"shutdown | {id}\"");
+        System.out.println("==  - \"{id} | {command}\"");
+        System.out.println("==  - \"shutdown\"");
+        System.out.println("==  - \"list\"");
+        System.out.println("==  - \"help\"");
+        System.out.println("== To exit type \"shutdown\".");
     }
 
     /**
@@ -115,6 +170,13 @@ public class Start {
     private static ExecutionResult executeManagerInstruction(InstanceManager manager, String instruction, String argument) {
         int id;
         switch (instruction) {
+            case "start":
+                return manager.startInstance(BuildQemuInstance.command(argument));
+            case "build":
+                return manager.buildInstance(BuildQemuInstance.command(argument));
+            case "execute":
+                id = Integer.parseInt(argument);
+                return manager.executeInstance(QemuInstanceID.valueOf(id));
             case "continue":
                 id = Integer.parseInt(argument);
                 return manager.continueInstance(QemuInstanceID.valueOf(id));
