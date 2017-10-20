@@ -127,10 +127,10 @@ public class Start {
         System.out.println("==  - \"suspend | {id}\"");
         System.out.println("==  - \"shutdown | {id}\"");
         System.out.println("==  - \"{id} | {command}\"");
-        System.out.println("==  - \"shutdown\"");
-        System.out.println("==  - \"list\"");
         System.out.println("==  - \"config | {file}\"");
+        System.out.println("==  - \"list\"");
         System.out.println("==  - \"help\"");
+        System.out.println("==  - \"shutdown\"");
         System.out.println("== To exit type \"shutdown\".");
     }
 
