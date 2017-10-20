@@ -21,3 +21,4 @@
 # End of https://www.gitignore.io/api/linux
 /Java/Library/*
 !/Java/Library/src/
+!/Java/Library/versioned_dist/

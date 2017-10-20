@@ -129,6 +129,7 @@ public class Start {
         System.out.println("==  - \"{id} | {command}\"");
         System.out.println("==  - \"shutdown\"");
         System.out.println("==  - \"list\"");
+        System.out.println("==  - \"config | {file}\"");
         System.out.println("==  - \"help\"");
         System.out.println("== To exit type \"shutdown\".");
     }
@@ -188,6 +189,8 @@ public class Start {
                 return manager.shutdownInstance(QemuInstanceID.valueOf(id));
             case "list":
                 return manager.listInstances();
+            case "config":
+                return manager.loadConfigurationFile(argument);
             default:
                 return Fail.because(Fail.Reason.NULL_ARGUMENT, "Unknown command \"" + instruction + "\".");
         }
